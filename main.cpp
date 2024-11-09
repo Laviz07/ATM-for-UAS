@@ -14,10 +14,12 @@ void tampilkanMenu(akun &akun);
 void cekSaldo(akun &akun);
 string formatUang(int angka);
 void tarikTunai(akun &akun);
+void setorTunai(akun &akun);
 
 string bye = "\nTerima kasih telah menggunakan ATM NGEPET BERSAMA!\n";
 string failed = "\nTransaksi gagal...";
 int akunIndex;
+int nominal;
 
 /* ---------------------------------- MAIN ----------------------------------*/
 int main()
@@ -185,7 +187,7 @@ void tampilkanMenu(akun &akun)
             tarikTunai(akun);
             break;
         case 3:
-            // setorTunai(akun);
+            setorTunai(akun);
             break;
         case 4:
             // transfer(akun);
@@ -298,7 +300,7 @@ void tarikTunai(akun &akun)
         else
         {
             akunList[akunIndex].saldo -= penarikan[pilihan - 1];
-            cout << "\nPenarikan berhasil. Sisa saldo Anda: Rp "
+            cout << "\nPenarikan berhasil! Sisa saldo Anda: Rp "
                  << formatUang(akunList[akunIndex].saldo) << endl;
             updateDB();
         }
@@ -307,7 +309,6 @@ void tarikTunai(akun &akun)
     {
         const int pecahan[2] = {50000, 100000};
         int pilihPecahan;
-        int nominal;
         cout << "\nSilahkan pilih pecahan uang yang anda inginkan:\n"
              << "Nominal penarikan tidak boleh lebih dari Rp 2.500.000\n";
         cout << "1. Rp. 50.000\n"
@@ -339,7 +340,7 @@ void tarikTunai(akun &akun)
             else
             {
                 akunList[akunIndex].saldo -= nominal; // Mengurangi saldo
-                cout << "\nPenarikan berhasil. Sisa saldo Anda: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
+                cout << "\nPenarikan berhasil! Sisa saldo Anda: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
                 updateDB(); // Memperbarui data ke file
             }
         }
@@ -347,5 +348,26 @@ void tarikTunai(akun &akun)
         {
             cout << "\nPilihan tidak tersedia" << failed << endl;
         }
+    }
+}
+
+void setorTunai(akun &akun)
+{
+    cout << "\n========== Setor Tunai ==========" << endl;
+    cout << "Pastikan nominal uang yang anda masukkan adalah kelipatan Rp 50.000 atau Rp 100.000" << endl;
+    cout << "Masukkan Nominal uang: Rp ";
+    cin >> nominal;
+
+    if (nominal % 50000 == 0 || nominal % 100000 == 0)
+    {
+        akunList[akunIndex].saldo += nominal;
+        cout << "\nSetor berhasil! Jumlah saldo Anda: Rp "
+             << formatUang(akunList[akunIndex].saldo) << endl;
+        updateDB();
+    }
+    else
+    {
+        cout << "\nNominal setor harus berupa pecahan Rp 50.000 atau Rp 100.000"
+             << failed << endl;
     }
 }
