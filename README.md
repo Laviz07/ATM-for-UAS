@@ -6,7 +6,7 @@ Project ATM untuk tugas akhir Algoritma dan Pemrograman
 * Cek Saldo (Done)
 * Tarik Tunai (Done)
 * Setor Tunai (Done)
-* Transfer (Not Yet)
+* Transfer (Done)
 
 ## Anggota Kelompok 3
 * Muhammad Rafisyah Rizkiyawan
