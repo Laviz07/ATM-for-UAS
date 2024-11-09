@@ -5,7 +5,7 @@ Project ATM untuk tugas akhir Algoritma dan Pemrograman
 ## Fitur
 * Cek Saldo (Done)
 * Tarik Tunai (Done)
-* Setor Tunai (Not Yet)
+* Setor Tunai (Done)
 * Transfer (Not Yet)
 
 ## Anggota Kelompok 3
