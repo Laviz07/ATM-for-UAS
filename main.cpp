@@ -8,31 +8,32 @@
 
 using namespace std;
 
-bool login(int inputKartu, string &inputPin, int &count, akun &akunLogin);
-void tampilkanMenu(akun &akun);
-void cekSaldo(akun &akun);
+/* --------------------------- DEKLARASI FUNCTION --------------------------- */
+bool   login(int inputKartu, string &inputPin, int &count, akun &akunLogin);
+void   tampilkanMenu(akun &akun);
+void   cekSaldo(akun &akun);
 string formatUang(int angka);
-void tarikTunai(akun &akun);
-void setorTunai(akun &akun);
-void transfer(akun &akun);
+void   tarikTunai(akun &akun);
+void   setorTunai(akun &akun);
+void   transfer(akun &akun);
 
-string bye = "\nTerima kasih telah menggunakan ATM NGEPET BERSAMA!\n";
+string bank[5] = {"BCA", "BRI", "BNI", "BTN", "Mandiri"};
+int    inputKartu;
+string bye    = "\nTerima kasih telah menggunakan ATM NGEPET BERSAMA!\n";
 string failed = "\nTransaksi gagal...";
-int akunIndex;
-int tujuanIndex;
-int nominal;
+int    akunIndex;
+int    tujuanIndex;
+int    nominal;
 
 /* ---------------------------------- MAIN ----------------------------------*/
-int main()
-{
-    int inputKartu;
+int main() {
     string inputPin;
-    int count = 0;
-    akun akunLogin;
+    int    count = 0;
+    akun   akunLogin;
 
-    cout << "\n===========================\n";
-    cout << "\n*** ATM NGEPET BERSAMA ***" << endl;
-    cout << "\n===========================\n";
+    cout << "\n============================================\n";
+    cout << "\n************ ATM NGEPET BERSAMA ************" << endl;
+    cout << "\n============================================\n";
 
     cout << "Pilih Bank Yang Ingin Anda Gunakan : \n"
          << "1. Bank BCA\n"
@@ -43,8 +44,8 @@ int main()
     cout << "Pilih (1-5): ";
     cin >> inputKartu;
 
-    if (inputKartu < 1 || inputKartu > 5)
-    {
+    // Jika input kartu tidak sesuai
+    if (inputKartu < 1 || inputKartu > 5) {
         cout << "Bank tidak tersedia" << endl;
         return 1;
     }
@@ -52,50 +53,19 @@ int main()
     cout << "\nMasukkan PIN anda: ";
     cin >> inputPin;
 
-    // Memanggil fungsi login dengan batas
-    // percobaan
-    if (!login(inputKartu, inputPin, count, akunLogin))
-    {
-        return 1;
-    }
+    // Jika login gagal
+    if (!login(inputKartu, inputPin, count, akunLogin)) { return 1; }
 
     tampilkanMenu(akunLogin);
     return 0;
 }
 
 /* ------------------------------- LOGIN USER ------------------------------- */
-bool login(int inputKartu, string &inputPin, int &count, akun &akunLogin)
-{
-    string bank;
-    switch (inputKartu)
-    {
-    case 1:
-        bank = "BCA";
-        break;
-    case 2:
-        bank = "BRI";
-        break;
-    case 3:
-        bank = "BNI";
-        break;
-    case 4:
-        bank = "BTN";
-        break;
-    case 5:
-        bank = "Mandiri";
-        break;
-    default:
-        return false;
-    }
-
-    // for (auto &akun : akunList)
-    for (int i = 0; i < 10; i++)
-    {
+bool login(int inputKartu, string &inputPin, int &count, akun &akunLogin) {
+    for (int i = 0; i < 10; i++) {
         // mengecek jika input kartu dan pin sesuai
-        if (akunList[i].kartu == bank && akunList[i].pin == inputPin)
-        {
-            cout << "Login berhasil! Selamat datang, "
-                 << akunList[i].nama << endl;
+        if (akunList[i].kartu == bank[inputKartu - 1] && akunList[i].pin == inputPin) {
+            cout << "Login berhasil! Selamat datang, " << akunList[i].nama << endl;
             akunLogin = akunList[i];
             akunIndex = i;
             return true;
@@ -104,8 +74,7 @@ bool login(int inputKartu, string &inputPin, int &count, akun &akunLogin)
 
     // Jika PIN salah, tambah jumlah percobaan dan beri peringatan
     count++;
-    if (count < 3)
-    {
+    if (count < 3) {
         cout << "PIN anda salah. Coba lagi (" << 3 - count << "x lagi)." << endl;
         cout << "Masukkan PIN anda: ";
         cin >> inputPin;
@@ -113,52 +82,44 @@ bool login(int inputKartu, string &inputPin, int &count, akun &akunLogin)
     }
 
     // Jika percobaan melebihi batas
-    cout << "PIN salah tiga kali. Akun anda terblokir."
-         << endl;
+    cout << "PIN salah tiga kali. Akun anda terblokir." << endl;
     return false;
 }
 
 /* -------------------- KONFIRMASI MELANJUTKAN TRANSAKSI -------------------- */
-bool lanjutkanTransaksi()
-{
+bool lanjutkanTransaksi() {
     char lanjut;
     cout << "\nApakah anda ingin melakukan transaksi yang lain? (Y/N): ";
     cin >> lanjut;
 
-    if (cin.fail())
-    {
+    if (cin.fail()) {
         cin.clear();
         cin.ignore(1000, '\n');
         cout << "Input tidak valid, silakan pilih Y atau N." << endl;
         return lanjutkanTransaksi(); // Meminta input ulang
     }
 
-    if (lanjut == 'Y' || lanjut == 'y')
-    {
-        return true; // Kembali ke menu utama
-    }
-    else if (lanjut == 'N' || lanjut == 'n')
-    {
+    if (lanjut == 'Y' || lanjut == 'y') {
+        return true;                 // Kembali ke menu utama
+    } else if (lanjut == 'N' || lanjut == 'n') {
         cout << bye;
-        return false; // Keluar dari program
-    }
-    else
-    {
+        return false;                // Keluar dari program
+    } else {
         cout << "\nInput tidak valid. Silakan coba lagi.";
         return lanjutkanTransaksi(); // Ulangi  jika input tidak valid
     }
 }
 
 /* ---------------------------- MENAMPILKAN MENU ---------------------------- */
-void tampilkanMenu(akun &akun)
-{
+void tampilkanMenu(akun &akun) {
     int pilihan;
 
-    do
-    {
-        cout << "\n========== ATM Menu ==========" << endl;
-        cout << "Nasabah " << akun.nama
-             << " yang terhormat, silahkan pilih transaksi yang ingin anda lakukan" << endl;
+    do {
+        cout << "\n=============================================\n";
+        cout << "\n*************** - ATM Menu - ***************" << endl;
+        cout << "\n=============================================\n";
+        cout << "Nasabah " << akun.nama << " yang terhormat, silahkan pilih transaksi yang ingin anda lakukan"
+             << endl;
         cout << "1. Cek Saldo\n"
              << "2. Tarik Tunai\n"
              << "3. Setor Tunai\n"
@@ -167,76 +128,50 @@ void tampilkanMenu(akun &akun)
         cout << "Pilih menu (1-5): ";
         cin >> pilihan;
 
-        if (cin.fail())
-        {
+        if (cin.fail()) {
             cin.clear();
             cin.ignore(1000, '\n');
-            // cout << "Input tidak valid. Silakan masukkan angka yang benar." << endl;
-            // cout << "Pilih menu (1-5): ";
-            // cin >> pilihan;
-            // continue;
         }
 
-        switch (pilihan)
-        {
-        case 1:
-            cekSaldo(akun);
-            break;
-        case 2:
-            tarikTunai(akun);
-            break;
-        case 3:
-            setorTunai(akun);
-            break;
-        case 4:
-            transfer(akun);
-            break;
-        case 5:
-            cout << bye;
-            return;
-        default:
-            cout << "\nPilihan tidak valid. Silakan coba lagi."
-                 << endl;
-            break;
+        // Memilih transaksi
+        switch (pilihan) {
+            case 1 : cekSaldo(akun); break;
+            case 2 : tarikTunai(akun); break;
+            case 3 : setorTunai(akun); break;
+            case 4 : transfer(akun); break;
+            case 5 : cout << bye; return;
+            default: cout << "\nPilihan tidak valid. Silakan coba lagi." << endl; break;
         }
-
-        // if (!lanjutkanTransaksi())
-        // {
-        //     cout << bye;
-        //     return;
-        // }
 
     } while (lanjutkanTransaksi());
 }
 
 /* ------------------------------- FORMAT UANG ------------------------------ */
-string formatUang(int angka) // fungsi untuk memformat uang
+string formatUang(int angka)       // fungsi untuk memformat uang
 {
     string str = to_string(angka); // merubah angka menjadi string, contoh: 1234567 -> "1234567"
-    int n = str.length() - 3;      // mendekrankan variabel n sebagai  panjang string str dikurangi dengan 3
+    int    n   = str.length() - 3; // mendekrankan variabel n sebagai  panjang string str dikurangi dengan 3
     while (n > 0)                  // mengulang selama variabel n lebih dari 0
     {
-        str.insert(n, "."); // menambahkan titik di posisi  variabel n
-        n -= 3;             // mengurangi variabel n dengan 3
+        str.insert(n, ".");        // menambahkan titik di posisi  variabel n
+        n -= 3;                    // mengurangi variabel n dengan 3
     }
     return str;
 }
 
 /* -------------------------------- CEK SALDO ------------------------------- */
-void cekSaldo(akun &akun)
-{
-    cout << "\n========== Cek Saldo ==========" << endl;
-    cout << "Saldo Anda saat ini: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
+void cekSaldo(akun &akun) {
+    cout << "\n=============================================\n";
+    cout << "\n*************** - Cek Saldo - ***************" << endl;
+    cout << "\n=============================================\n";
+    cout << "\nSaldo Anda saat ini: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
 }
 
 /* ----------------------------- UPDATE DATABASE ---------------------------- */
-void updateDB()
-{
+void updateDB() {
     ofstream dbFile("db.cpp");
-    if (!dbFile)
-    {
-        cerr << "Gagal membuka file untuk menyimpan data!"
-             << endl;
+    if (!dbFile) {
+        cerr << "Gagal membuka file untuk menyimpan data!" << endl;
         return;
     }
     dbFile << "#include <string>\n";
@@ -250,20 +185,15 @@ void updateDB()
     dbFile << "};\n\n";
     dbFile << "akun akunList[10] = {\n";
 
-    for (int i = 0; i < 10; ++i)
-    {
+    for (int i = 0; i < 10; ++i) {
         const auto &akun = akunList[i];
         dbFile << "    {\"" << akun.nama << "\", "
                << "\"" << akun.kartu << "\", "
-               << "\"" << akun.pin << "\", "
-               << akun.saldo << ", "
+               << "\"" << akun.pin << "\", " << akun.saldo << ", "
                << "\"" << akun.no_rek << "\"}";
 
         // Tambahkan koma di akhir kecuali untuk elemen terakhir
-        if (i < 9)
-        {
-            dbFile << ",";
-        }
+        if (i < 9) { dbFile << ","; }
         dbFile << "\n";
     }
 
@@ -271,12 +201,11 @@ void updateDB()
     dbFile.close();
 }
 
-bool checkInvalidInput()
-{
-    if (cin.fail())
-    {
-        cin.clear();            // Menghapus status error pada cin
-        cin.ignore(1000, '\n'); // Mengosongkan buffer cin
+/* --------------------------- CHECK INVALID INPUT -------------------------- */
+bool checkInvalidInput() {
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(1000, '\n');
         cout << "\nInput tidak valid! Harap masukkan angka saja.\n";
         return false;
     }
@@ -284,12 +213,13 @@ bool checkInvalidInput()
 }
 
 /* ------------------------------- TARIK TUNAI ------------------------------ */
-void tarikTunai(akun &akun)
-{
+void tarikTunai(akun &akun) {
     long penarikan[5] = {100000, 200000, 300000, 1000000, 1500000};
-    int pilihan;
-    cout << "\n========== Tarik Tunai ==========" << endl;
-    cout << "Silahkan pilih nominal penarikan:" << endl;
+    int  pilihan;
+    cout << "\n=============================================\n";
+    cout << "\n************** - Tarik Tunai - **************" << endl;
+    cout << "\n=============================================\n";
+    cout << "\nSilahkan pilih nominal penarikan:" << endl;
     cout << "1. Rp. 100.000\n"
          << "2. Rp. 200.000\n"
          << "3. Rp. 300.000\n"
@@ -299,27 +229,23 @@ void tarikTunai(akun &akun)
     cout << "Pilih (1-6): ";
     cin >> pilihan;
 
-    if (checkInvalidInput() && (pilihan >= 1 && pilihan <= 5))
-    {
-        if (akun.saldo < penarikan[pilihan - 1])
-        {
-            cout << "\nMaaf, saldo anda tidak mencukupi"
-                 << endl;
-            cout << "Saldo anda saat ini adalah: "
-                 << formatUang(akunList[akunIndex].saldo) << failed << endl;
-        }
-        else
-        {
+    // Mengecek apakah user memilih opsi 1-5
+    if (checkInvalidInput() && (pilihan >= 1 && pilihan <= 5)) {
+        // Memeriksa apakah saldo user mencukupi
+        if (akun.saldo < penarikan[pilihan - 1]) {
+            cout << "\nMaaf, saldo anda tidak mencukupi" << endl;
+            cout << "Saldo anda saat ini adalah: " << formatUang(akunList[akunIndex].saldo) << failed << endl;
+        } else {
+            // Melakukan penarikan berdasarkan opsi yang dipilih
             akunList[akunIndex].saldo -= penarikan[pilihan - 1];
-            cout << "\nPenarikan berhasil! Sisa saldo Anda: Rp "
-                 << formatUang(akunList[akunIndex].saldo) << endl;
+            cout << "\nPenarikan berhasil! Sisa saldo Anda: Rp " << formatUang(akunList[akunIndex].saldo)
+                 << endl;
             updateDB();
         }
-    }
-    else if (pilihan == 6)
-    {
+        // Mencek apakah user memilih opsi 6
+    } else if (pilihan == 6) {
         const int pecahan[2] = {50000, 100000};
-        int pilihPecahan;
+        int       pilihPecahan;
         cout << "\nSilahkan pilih pecahan uang yang anda inginkan:\n"
              << "Nominal penarikan tidak boleh lebih dari Rp 2.500.000\n";
         cout << "1. Rp. 50.000\n"
@@ -327,94 +253,83 @@ void tarikTunai(akun &akun)
         cout << "Pilih (1-2): ";
         cin >> pilihPecahan;
 
-        if (checkInvalidInput() && (pilihPecahan == 1 || pilihPecahan == 2))
-        {
+        // Memeriksa pilihan pecahan
+        if (checkInvalidInput() && (pilihPecahan == 1 || pilihPecahan == 2)) {
             cout << "Masukkan jumlah nominal penarikan: Rp ";
             cin >> nominal;
 
-            if (!checkInvalidInput())
-            {
-                return;
-            }
+            if (!checkInvalidInput()) { return; }
 
-            if (nominal > 2500000)
-            {
-                cout << "Nominal penarikan tidak boleh lebih dari Rp 2.500.000\n"
-                     << failed << endl;
+            // Memeriksa apakah nominal penarikan valid
+            // Jika nominalnya lebih dari Rp 2.500.000
+            if (nominal > 2500000) {
+                cout << "Nominal penarikan tidak boleh lebih dari Rp 2.500.000\n" << failed << endl;
             }
-            else if (!(nominal % pecahan[pilihPecahan - 1] == 0))
-            {
+            // Jika nominal penarikan bukan kelipatan pecahan
+            else if (!(nominal % pecahan[pilihPecahan - 1] == 0)) {
                 cout << "\nNominal penarikan harus berupa pecahan Rp "
                      << formatUang(pecahan[pilihPecahan - 1]) << failed << endl;
             }
-            else if (akunList[akunIndex].saldo < nominal)
-            {
+            // Jika saldo tidak mencukupi
+            else if (akunList[akunIndex].saldo < nominal) {
                 cout << "\nMaaf, saldo anda tidak mencukupi" << endl;
-                cout << "Saldo anda saat ini adalah: " << formatUang(akunList[akunIndex].saldo) << failed << endl;
+                cout << "Saldo anda saat ini adalah: " << formatUang(akunList[akunIndex].saldo) << failed
+                     << endl;
             }
-
-            else
-            {
+            // Jika semua syarat terpenuhi
+            else {
                 akunList[akunIndex].saldo -= nominal; // Mengurangi saldo
-                cout << "\nPenarikan berhasil! Sisa saldo Anda: Rp "
-                     << formatUang(akunList[akunIndex].saldo) << endl;
-                updateDB(); // Memperbarui data ke file
+                cout << "\nPenarikan berhasil! Sisa saldo Anda: Rp " << formatUang(akunList[akunIndex].saldo)
+                     << endl;
+                updateDB();                           // Memperbarui data ke file
             }
-        }
-        else
-        {
+        } else {
             cout << "\nPilihan tidak tersedia" << failed << endl;
         }
     }
 }
 
 /* ------------------------------- SETOR TUNAI ------------------------------ */
-void setorTunai(akun &akun)
-{
-    cout << "\n========== Setor Tunai ==========" << endl;
-    cout << "Pastikan nominal uang yang anda masukkan adalah kelipatan Rp 50.000 atau Rp 100.000" << endl;
+void setorTunai(akun &akun) {
+    cout << "\n=============================================\n";
+    cout << "\n************** - Setor Tunai - **************" << endl;
+    cout << "\n=============================================\n";
+    cout << "\nPastikan nominal uang yang anda masukkan adalah kelipatan Rp 50.000 atau Rp 100.000" << endl;
     cout << "Masukkan Nominal uang: Rp ";
     cin >> nominal;
 
-    if (!checkInvalidInput())
-    {
-        return;
-    }
+    if (!checkInvalidInput()) { return; }
 
-    if (nominal > 50000000)
-    {
+    // Memeriksa apakah nominal setor lebih dari Rp 50.000.000
+    if (nominal > 50000000) {
         cout << "Tidak bisa menyetor uang melebihi Rp 50.000.000" << failed << endl;
         return;
     }
 
-    if (nominal % 50000 == 0 || nominal % 100000 == 0)
-    {
+    // Memeriksa apakah nominal setor kelipatan Rp 50.000 atau Rp 100.000
+    if (nominal % 50000 == 0 || nominal % 100000 == 0) {
         akunList[akunIndex].saldo += nominal;
-        cout << "\nSetor berhasil! Jumlah saldo Anda: Rp "
-             << formatUang(akunList[akunIndex].saldo) << endl;
+        cout << "\nSetor berhasil! Jumlah saldo Anda: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
         updateDB();
-    }
-    else
-    {
-        cout << "\nNominal setor harus berupa pecahan Rp 50.000 atau Rp 100.000"
-             << failed << endl;
+    } else {
+        cout << "\nNominal setor harus berupa pecahan Rp 50.000 atau Rp 100.000" << failed << endl;
     }
 }
 
-void transfer(akun &akun)
-{
+void transfer(akun &akun) {
     string rekTujuan;
-    bool found = false;
+    bool   found = false;
 
-    cout << "\n========== Transfer ==========" << endl;
-    cout << "Masukkan nomor rekening tujuan anda: ";
+    cout << "\n=============================================\n";
+    cout << "\n*************** - Transfer - ***************" << endl;
+    cout << "\n=============================================\n";
+    cout << "\nMasukkan nomor rekening tujuan anda: ";
     cin >> rekTujuan;
 
-    for (int j = 0; j < 10; j++)
-    {
-        if (akunList[j].no_rek == rekTujuan)
-        {
-            found = true;
+    for (int j = 0; j < 10; j++) {
+        // Memeriksa apakah rekTujuan ada di akunList
+        if (akunList[j].no_rek == rekTujuan) {
+            found       = true;
             tujuanIndex = j;
             cout << "\nNomor Rekening tujuan: " << akunList[tujuanIndex].no_rek << endl;
             cout << "Nama akun tujuan: " << akunList[tujuanIndex].nama << endl;
@@ -422,27 +337,25 @@ void transfer(akun &akun)
             cout << "\nMasukkan nominal transfer: Rp ";
             cin >> nominal;
 
-            if (checkInvalidInput() && (akunList[akunIndex].saldo >= nominal))
-            {
-                // cout << "saldo tujuan: " << akunList[tujuanIndex].saldo << endl;
-                // cout << "saldo anda: " << akunList[akunIndex].saldo << endl;
+            // Memeriksa apakah nominal transfer kurang dari Rp 10.000 atau melebihi Rp 50.000.000
+            if ((nominal < 10000) || (nominal > 50000000)) {
+                cout << "\nNominal transfer tidak boleh kurang dari Rp 10.000 atau melebihi Rp 50.000.000"
+                     << failed << endl;
+                return;
+            }
+            // Memeriksa apakah saldo cukup
+            if (checkInvalidInput() && (akunList[akunIndex].saldo >= nominal)) {
                 akunList[akunIndex].saldo -= nominal;
                 akunList[tujuanIndex].saldo += nominal;
 
                 cout << "Transfer ke rekening " << akunList[tujuanIndex].no_rek << " berhasil!\n"
-                     << "Sisa saldo anda: Rp " << formatUang(akunList[akunIndex].saldo)
-                     << endl;
+                     << "Sisa saldo anda: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
                 updateDB();
-            }
-            else
-            {
+            } else {
                 cout << "Saldo tidak cukup untuk melakukan transfer." << endl;
             }
             break;
         }
     }
-    if (!found)
-    {
-        cout << "Nomor rekening tujuan tidak ditemukan" << endl;
-    }
+    if (!found) { cout << "Nomor rekening tujuan tidak ditemukan" << endl; }
 }
