@@ -1,8 +1,10 @@
 #include "db.cpp"
 
+#include <cctype>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 
@@ -16,6 +18,7 @@ string formatUang(int angka);
 void   tarikTunai(akun &akun);
 void   setorTunai(akun &akun);
 void   transfer(akun &akun);
+void   ubahPin(akun &akun);
 
 string bank[5] = {"BCA", "BRI", "BNI", "BTN", "Mandiri"};
 int    inputKartu;
@@ -124,8 +127,9 @@ void tampilkanMenu(akun &akun) {
              << "2. Tarik Tunai\n"
              << "3. Setor Tunai\n"
              << "4. Transfer\n"
-             << "5. Keluar\n";
-        cout << "Pilih menu (1-5): ";
+             << "5. Ubah PIN\n"
+             << "6. Keluar\n";
+        cout << "Pilih menu (1-6): ";
         cin >> pilihan;
 
         if (cin.fail()) {
@@ -139,7 +143,8 @@ void tampilkanMenu(akun &akun) {
             case 2 : tarikTunai(akun); break;
             case 3 : setorTunai(akun); break;
             case 4 : transfer(akun); break;
-            case 5 : cout << bye; return;
+            case 5 : ubahPin(akun); break;
+            case 6 : cout << bye; return;
             default: cout << "\nPilihan tidak valid. Silakan coba lagi." << endl; break;
         }
 
@@ -147,8 +152,7 @@ void tampilkanMenu(akun &akun) {
 }
 
 /* ------------------------------- FORMAT UANG ------------------------------ */
-string formatUang(int angka)       // fungsi untuk memformat uang
-{
+string formatUang(int angka) {
     string str = to_string(angka); // merubah angka menjadi string, contoh: 1234567 -> "1234567"
     int    n   = str.length() - 3; // mendekrankan variabel n sebagai  panjang string str dikurangi dengan 3
     while (n > 0)                  // mengulang selama variabel n lebih dari 0
@@ -205,7 +209,7 @@ void updateDB() {
 bool checkInvalidInput() {
     if (cin.fail()) {
         cin.clear();
-        cin.ignore(1000, '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "\nInput tidak valid! Harap masukkan angka saja.\n";
         return false;
     }
@@ -316,6 +320,7 @@ void setorTunai(akun &akun) {
     }
 }
 
+/* -------------------------------- TRANSFER -------------------------------- */
 void transfer(akun &akun) {
     string rekTujuan;
     bool   found = false;
@@ -358,4 +363,58 @@ void transfer(akun &akun) {
         }
     }
     if (!found) { cout << "Nomor rekening tujuan tidak ditemukan" << endl; }
+}
+
+/* -------------------------------- UBAH PIN -------------------------------- */
+void ubahPin(akun &akun) {
+    string oldPin;
+    string newPin;
+    string confirmPin;
+
+    cout << "\n=============================================\n";
+    cout << "\n*************** - Ubah Pin - ***************" << endl;
+    cout << "\n=============================================\n";
+
+    cout << "\nMasukkan pin lama: ";
+    cin >> oldPin;
+
+    // Memeriksa apakah pin lama cocok
+    if (oldPin != akun.pin) {
+        cout << "\nPin lama salah!" << failed << endl;
+        return;
+    }
+
+    cout << "\nSilahkan masukkan pin baru anda.\nPin harus terdiri dari 6 angka." << endl;
+    cout << "\nMasukkan pin baru: ";
+    cin >> newPin;
+
+    // Memeriksa apakah panjang pin baru kurang dari 6
+    if (newPin.length() != 6) {
+        cout << "\nPin harus terdiri dari 6 angka." << failed << endl;
+        return;
+    }
+
+    // Memeriksa apakah pin baru hanya mengandung angka
+    for (char digit : newPin) {
+        if (!isdigit(digit)) { // Cek apakah karakter bukan angka
+            cout << "PIN hanya boleh mengandung angka." << endl;
+            return;
+        }
+    }
+
+    // Memeriksa apakah pin baru sama dengan pin lama
+    //Jika tidak, maka akan meminta user untuk memasukkan pin kembali
+    do {
+        cout << "\nKonfirmasi kembali pin baru: ";
+        cin >> confirmPin;
+
+        if (newPin != confirmPin) {
+            cout << "\nPin baru tidak cocok!" << failed << endl;
+            cout << "\nHarap masukkan pin dengan benar." << endl;
+        }
+    } while (newPin != confirmPin);
+
+    akunList[akunIndex].pin = newPin;
+    cout << "\nPin berhasil diubah!" << endl;
+    updateDB();
 }

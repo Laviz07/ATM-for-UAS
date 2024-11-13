@@ -7,6 +7,7 @@ Project ATM untuk tugas akhir Algoritma dan Pemrograman
 * Tarik Tunai (Done)
 * Setor Tunai (Done)
 * Transfer (Done)
+* Ubah PIN (Done)
 
 ## Anggota Kelompok 3
 * Muhammad Rafisyah Rizkiyawan
