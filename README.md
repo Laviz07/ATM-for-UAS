@@ -2,6 +2,9 @@
 
 Project ATM untuk tugas akhir Algoritma dan Pemrograman
 
+## Flowchart
+![Flowchart ATM](Flowchart.jpg)
+
 ## Fitur
 * Cek Saldo (Done)
 * Tarik Tunai (Done)

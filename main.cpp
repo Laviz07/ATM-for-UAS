@@ -1,24 +1,21 @@
-#include "db.cpp"
+#include "db.cpp" //untuk memanggil file db.cpp
 
-#include <cctype>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <limits>
-#include <sstream>
-#include <string>
+#include <iostream> //untuk operasi input dan output (cin dan cout)
+#include <string> //untuk membuat, memeriksa, dan memodifikasi urutan string
+#include <cctype> //untuk mengatur karakter spesial
+#include <fstream> //untuk membaca dan menulis file
+#include <limits> //untuk mengatur batasan input
 
-using namespace std;
+using namespace std; //menggunakan namespace std
 
 /* --------------------------- DEKLARASI FUNCTION --------------------------- */
 bool   login(int inputKartu, string &inputPin, int &count, akun &akunLogin);
-void   tampilkanMenu(akun &akun);
-void   cekSaldo(akun &akun);
-string formatUang(int angka);
+void   tampilkanMenu(akun &akun);   
+void   cekSaldo(akun &akun); string formatUang(int angka);
 void   tarikTunai(akun &akun);
-void   setorTunai(akun &akun);
-void   transfer(akun &akun);
-void   ubahPin(akun &akun);
+void   setorTunai(akun &akun); 
+void   transfer(akun &akun); 
+void   ubahPin(akun &akun); 
 
 string bank[5] = {"BCA", "BRI", "BNI", "BTN", "Mandiri"};
 int    inputKartu;
@@ -178,8 +175,8 @@ void updateDB() {
         cerr << "Gagal membuka file untuk menyimpan data!" << endl;
         return;
     }
-    dbFile << "#include <string>\n";
-    dbFile << "using namespace std;\n\n";
+    dbFile << "#include <string>\n"
+           << "using namespace std;\n\n";
     dbFile << "struct akun {\n";
     dbFile << "    string nama;\n";
     dbFile << "    string kartu;\n";
@@ -403,7 +400,7 @@ void ubahPin(akun &akun) {
     }
 
     // Memeriksa apakah pin baru sama dengan pin lama
-    //Jika tidak, maka akan meminta user untuk memasukkan pin kembali
+    // Jika tidak, maka akan meminta user untuk memasukkan pin kembali
     do {
         cout << "\nKonfirmasi kembali pin baru: ";
         cin >> confirmPin;
