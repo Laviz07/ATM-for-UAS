@@ -1,21 +1,23 @@
-#include "db.cpp" //untuk memanggil file db.cpp
+#include "db.cpp"    //untuk memanggil file db.cpp
 
-#include <iostream> //untuk operasi input dan output (cin dan cout)
-#include <string> //untuk membuat, memeriksa, dan memodifikasi urutan string
-#include <cctype> //untuk mengatur karakter spesial
-#include <fstream> //untuk membaca dan menulis file
-#include <limits> //untuk mengatur batasan input
+#include <cctype>    //untuk mengatur karakter spesial
+#include <fstream>   //untuk membaca dan menulis file
+#include <iostream>  //untuk operasi input dan output (cin dan cout)
+#include <limits>    //untuk mengatur batasan input
+#include <string>    //untuk membuat, memeriksa, dan memodifikasi urutan string
 
-using namespace std; //menggunakan namespace std
+using namespace std; // menggunakan namespace std
 
 /* --------------------------- DEKLARASI FUNCTION --------------------------- */
 bool   login(int inputKartu, string &inputPin, int &count, akun &akunLogin);
-void   tampilkanMenu(akun &akun);   
-void   cekSaldo(akun &akun); string formatUang(int angka);
+void   tampilkanMenu(akun &akun);
+bool   lanjutkanTransaksi();
+void   cekSaldo(akun &akun);
+string formatUang(int angka);
 void   tarikTunai(akun &akun);
-void   setorTunai(akun &akun); 
-void   transfer(akun &akun); 
-void   ubahPin(akun &akun); 
+void   setorTunai(akun &akun);
+void   transfer(akun &akun);
+void   ubahPin(akun &akun);
 
 string bank[5] = {"BCA", "BRI", "BNI", "BTN", "Mandiri"};
 int    inputKartu;
@@ -86,30 +88,6 @@ bool login(int inputKartu, string &inputPin, int &count, akun &akunLogin) {
     return false;
 }
 
-/* -------------------- KONFIRMASI MELANJUTKAN TRANSAKSI -------------------- */
-bool lanjutkanTransaksi() {
-    char lanjut;
-    cout << "\nApakah anda ingin melakukan transaksi yang lain? (Y/N): ";
-    cin >> lanjut;
-
-    if (cin.fail()) {
-        cin.clear();
-        cin.ignore(1000, '\n');
-        cout << "Input tidak valid, silakan pilih Y atau N." << endl;
-        return lanjutkanTransaksi(); // Meminta input ulang
-    }
-
-    if (lanjut == 'Y' || lanjut == 'y') {
-        return true;                 // Kembali ke menu utama
-    } else if (lanjut == 'N' || lanjut == 'n') {
-        cout << bye;
-        return false;                // Keluar dari program
-    } else {
-        cout << "\nInput tidak valid. Silakan coba lagi.";
-        return lanjutkanTransaksi(); // Ulangi  jika input tidak valid
-    }
-}
-
 /* ---------------------------- MENAMPILKAN MENU ---------------------------- */
 void tampilkanMenu(akun &akun) {
     int pilihan;
@@ -129,9 +107,14 @@ void tampilkanMenu(akun &akun) {
         cout << "Pilih menu (1-6): ";
         cin >> pilihan;
 
+        // Jika input tidak valid, seperti memasukkan tipe data yg tidak sesuai
         if (cin.fail()) {
+            // Membersihkan status error yang disimpan di buffer (tempat sementara untuk menyimpan data).
             cin.clear();
+            // Mengabaikan karakter yang tidak diinginkan
             cin.ignore(1000, '\n');
+            // 100 merupakan jumlah maksimal karakter yang diabaikan
+            //'\n' akan membuat proses pengabaian berhenti
         }
 
         // Memilih transaksi
@@ -146,6 +129,31 @@ void tampilkanMenu(akun &akun) {
         }
 
     } while (lanjutkanTransaksi());
+}
+
+/* -------------------- KONFIRMASI MELANJUTKAN TRANSAKSI -------------------- */
+bool lanjutkanTransaksi() {
+    char lanjut;
+    cout << "\nApakah anda ingin melakukan transaksi yang lain? (Y/N): ";
+    cin >> lanjut;
+
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+
+        cout << "Input tidak valid, silakan pilih Y atau N." << endl;
+        return lanjutkanTransaksi(); // Meminta input ulang
+    }
+
+    if (lanjut == 'Y' || lanjut == 'y') {
+        return true;                 // Kembali ke menu utama
+    } else if (lanjut == 'N' || lanjut == 'n') {
+        cout << bye;
+        return false;                // Keluar dari program
+    } else {
+        cout << "\nInput tidak valid. Silakan coba lagi.";
+        return lanjutkanTransaksi(); // Ulangi  jika input tidak valid
+    }
 }
 
 /* ------------------------------- FORMAT UANG ------------------------------ */
@@ -165,27 +173,35 @@ void cekSaldo(akun &akun) {
     cout << "\n=============================================\n";
     cout << "\n*************** - Cek Saldo - ***************" << endl;
     cout << "\n=============================================\n";
+
+    // Menampilkan saldo
     cout << "\nSaldo Anda saat ini: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
 }
 
 /* ----------------------------- UPDATE DATABASE ---------------------------- */
 void updateDB() {
+    // Membuka file db.cpp
     ofstream dbFile("db.cpp");
+
+    // Jika file gagal dibuka, program akan mencetak pesan error
     if (!dbFile) {
         cerr << "Gagal membuka file untuk menyimpan data!" << endl;
         return;
     }
-    dbFile << "#include <string>\n"
-           << "using namespace std;\n\n";
-    dbFile << "struct akun {\n";
-    dbFile << "    string nama;\n";
-    dbFile << "    string kartu;\n";
-    dbFile << "    string pin;\n";
-    dbFile << "    long saldo;\n";
-    dbFile << "    string no_rek;\n";
-    dbFile << "};\n\n";
-    dbFile << "akun akunList[10] = {\n";
 
+    // Menulis data ke dalam file
+    dbFile << "#include <string>\n"
+           << "using namespace std;\n\n"
+           << "struct akun {\n"
+           << "    string nama;\n"
+           << "    string kartu;\n"
+           << "    string pin;\n"
+           << "    long saldo;\n"
+           << "    string no_rek;\n"
+           << "};\n\n"
+           << "akun akunList[10] = {\n";
+
+    // Menulis semua data akun ke dalam file
     for (int i = 0; i < 10; ++i) {
         const auto &akun = akunList[i];
         dbFile << "    {\"" << akun.nama << "\", "
@@ -199,6 +215,8 @@ void updateDB() {
     }
 
     dbFile << "};\n";
+
+    // Menutup file
     dbFile.close();
 }
 
@@ -206,7 +224,7 @@ void updateDB() {
 bool checkInvalidInput() {
     if (cin.fail()) {
         cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Mengabaikan seluruh karakter dalam buffer
         cout << "\nInput tidak valid! Harap masukkan angka saja.\n";
         return false;
     }
@@ -309,7 +327,7 @@ void setorTunai(akun &akun) {
 
     // Memeriksa apakah nominal setor kelipatan Rp 50.000 atau Rp 100.000
     if (nominal % 50000 == 0 || nominal % 100000 == 0) {
-        akunList[akunIndex].saldo += nominal;
+        akunList[akunIndex].saldo += nominal; //menambah saldo
         cout << "\nSetor berhasil! Jumlah saldo Anda: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
         updateDB();
     } else {
@@ -347,8 +365,8 @@ void transfer(akun &akun) {
             }
             // Memeriksa apakah saldo cukup
             if (checkInvalidInput() && (akunList[akunIndex].saldo >= nominal)) {
-                akunList[akunIndex].saldo -= nominal;
-                akunList[tujuanIndex].saldo += nominal;
+                akunList[akunIndex].saldo -= nominal; //mengurangi saldo pengirim
+                akunList[tujuanIndex].saldo += nominal; //menambah saldo tujuan
 
                 cout << "Transfer ke rekening " << akunList[tujuanIndex].no_rek << " berhasil!\n"
                      << "Sisa saldo anda: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
@@ -359,6 +377,7 @@ void transfer(akun &akun) {
             break;
         }
     }
+    // Jika rekening Tujuan tidak ditemukan
     if (!found) { cout << "Nomor rekening tujuan tidak ditemukan" << endl; }
 }
 
@@ -411,7 +430,7 @@ void ubahPin(akun &akun) {
         }
     } while (newPin != confirmPin);
 
-    akunList[akunIndex].pin = newPin;
+    akunList[akunIndex].pin = newPin; // Mengubah pin menjadi pin baru
     cout << "\nPin berhasil diubah!" << endl;
     updateDB();
 }
