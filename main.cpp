@@ -34,7 +34,7 @@ int main() {
     akun   akunLogin;
 
     cout << "\n============================================\n";
-    cout << "\n************ ATM NGEPET BERSAMA ************" << endl;
+    cout << "\n************ ATM TUNAI MANDIRI ************" << endl;
     cout << "\n============================================\n";
 
     cout << "Pilih Bank Yang Ingin Anda Gunakan : \n"
@@ -327,7 +327,7 @@ void setorTunai(akun &akun) {
 
     // Memeriksa apakah nominal setor kelipatan Rp 50.000 atau Rp 100.000
     if (nominal % 50000 == 0 || nominal % 100000 == 0) {
-        akunList[akunIndex].saldo += nominal; //menambah saldo
+        akunList[akunIndex].saldo += nominal; // menambah saldo
         cout << "\nSetor berhasil! Jumlah saldo Anda: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
         updateDB();
     } else {
@@ -365,8 +365,8 @@ void transfer(akun &akun) {
             }
             // Memeriksa apakah saldo cukup
             if (checkInvalidInput() && (akunList[akunIndex].saldo >= nominal)) {
-                akunList[akunIndex].saldo -= nominal; //mengurangi saldo pengirim
-                akunList[tujuanIndex].saldo += nominal; //menambah saldo tujuan
+                akunList[akunIndex].saldo -= nominal;   // mengurangi saldo pengirim
+                akunList[tujuanIndex].saldo += nominal; // menambah saldo tujuan
 
                 cout << "Transfer ke rekening " << akunList[tujuanIndex].no_rek << " berhasil!\n"
                      << "Sisa saldo anda: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
