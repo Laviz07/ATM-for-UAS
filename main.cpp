@@ -244,7 +244,7 @@ void tarikTunai(akun &akun) {
          << "3. Rp. 300.000\n"
          << "4. Rp. 1.000.000\n"
          << "5. RP. 1.500.000\n"
-         << "6. Pilih nominal lainnya\n";
+         << "6. Pilih nominal lain\n";
     cout << "Pilih (1-6): ";
     cin >> pilihan;
 
@@ -325,13 +325,13 @@ void setorTunai(akun &akun) {
         return;
     }
 
-    // Memeriksa apakah nominal setor kelipatan Rp 50.000 atau Rp 100.000
-    if (nominal % 50000 == 0 || nominal % 100000 == 0) {
+    // Memeriksa apakah nominal setor kelipatan Rp 50.000
+    if (nominal % 50000 == 0) {
         akunList[akunIndex].saldo += nominal; // menambah saldo
         cout << "\nSetor berhasil! Jumlah saldo Anda: Rp " << formatUang(akunList[akunIndex].saldo) << endl;
         updateDB();
     } else {
-        cout << "\nNominal setor harus berupa pecahan Rp 50.000 atau Rp 100.000" << failed << endl;
+        cout << "\nHanya bisa memasukkan uang Rp 50.000 atau Rp 100.000" << failed << endl;
     }
 }
 

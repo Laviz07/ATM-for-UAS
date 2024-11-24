@@ -4,7 +4,7 @@ Project ATM untuk tugas akhir Algoritma dan Pemrograman
 
 ## Flowchart
 
-![Flowchart ATM](Flowchart.jpg)
+![Flowchart ATM](Flowchart_ATM.jpg)
 
 ## Fitur
 
