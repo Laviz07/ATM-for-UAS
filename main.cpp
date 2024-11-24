@@ -21,7 +21,7 @@ void   ubahPin(akun &akun);
 
 string bank[5] = {"BCA", "BRI", "BNI", "BTN", "Mandiri"};
 int    inputKartu;
-string bye    = "\nTerima kasih telah menggunakan ATM NGEPET BERSAMA!\n";
+string bye    = "\nTerima kasih telah menggunakan ATM Tunai Mandiri!\n";
 string failed = "\nTransaksi gagal...";
 int    akunIndex;
 int    tujuanIndex;
